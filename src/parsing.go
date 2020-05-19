@@ -18,15 +18,12 @@ func openFile(fileName string) {
 func checkArgs(arguments []string) {
 	if len(arguments) < 3 {
 		printUsage()
-		return
 	} else {
 		for i := 1; i < len(arguments); i++ {
 			if arguments[i] == "--input" || arguments[i] == "-i" {
 				openFile(arguments[i+1])
-				return
 			} else {
 				printUsage()
-				return
 			}
 		}
 	}
