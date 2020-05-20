@@ -1,7 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"io/ioutil"
+	"regexp"
 	"strings"
 )
 
@@ -10,6 +12,19 @@ func removeComment(line string) string {
 	trim := strings.TrimSpace(tab[0])
 	newLine := string(trim)
 	return newLine
+}
+
+func checkFormat(line string) bool {
+	fmt.Println(line)
+	re := regexp.MustCompile("([A-Z]\\s\\=\\>\\s[A-Z])")
+	fmt.Println(re.MatchString(line))
+	rest := re.Split(line, 2)
+	lenRest := len(rest)
+	fmt.Println(re.Split(line, 2))
+	if strings.Contains(line, "=>") == false || lenRest > 0 {
+		return true
+	}
+	return false
 }
 
 func addVar(tab []string) {
@@ -42,7 +57,9 @@ func parseFile(data string) sFile {
 	nbLines := len(lines)
 	for i := 0; i < nbLines; i++ {
 		line := removeComment(string(lines[i]))
-		if len(line) > 0 {
+		if checkFormat(line) {
+			printErrorMsg("The file is badly formatted, please check it.")
+		} else if len(line) > 0 {
 			if line[0] != '=' && line[0] != '?' {
 				file.Rules = append(file.Rules, getRule(line))
 			} else if line[0] == '=' {
