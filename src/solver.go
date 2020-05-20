@@ -11,8 +11,34 @@ import "fmt"
 */
 
 func rulesLoop(querie string, rules []sRule) {
-	for i := 0; i < len(rules); i++ {
+	//for i := 0; i < len(rules); i++ {
+	for i := 0; i < 1; i++ {
 		fmt.Println(rules[i])
+		//* fonction resolve ONE rule */
+		//on remplace les variables
+		fmt.Println("ces faits = ", rules[i].Facts)
+		fmt.Println("impliquent= ", rules[i].Conclusion)
+		fmt.Println("len faits= ", len(rules[i].Facts))
+		fmt.Println("len Conclusion= ", len(rules[i].Conclusion))
+		if len(rules[i].Facts) == 1 && len(rules[i].Conclusion) == 1 {
+			
+			
+			// valeur, ok := vars[rules[i].Facts[0]]
+			// valeur2, ok2 := vars[rules[i].Conclusion[0]]
+
+			/*test si presence not*/
+			// if ok && ok2 { // si existent deja toute les 2 on verifie qu'elles sont egales
+			// 	if valeur == valeur2 {
+			// 		continue
+			// 	} else { //sinon on print err contradictoire
+			// 		printErrorMsg("System as contradictions please review input")
+			// 	}
+			// } else {
+
+			// }
+		}
+		//on rajoute les valeurs trouvées et on return ok
+		//ou on ne trouve rien et on retrurn false
 	}
 }
 
