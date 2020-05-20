@@ -5,6 +5,12 @@ import (
 	"os"
 )
 
+func printErrorMsg(msg string) {
+	fmt.Println("Error: expert-system")
+	fmt.Println(msg)
+	os.Exit(1)
+}
+
 func printError(err error) {
 	fmt.Println("Error: expert-system")
 	fmt.Println(err)

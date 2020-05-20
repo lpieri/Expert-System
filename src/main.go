@@ -5,5 +5,7 @@ import (
 )
 
 func main() {
-	checkArgs(os.Args)
+	var file sFile
+	file = checkArgs(os.Args)
+	resolve(file)
 }
