@@ -5,6 +5,13 @@ import (
 	"os"
 )
 
+func removeIndexFormTab(i int, tab []string) []string {
+	copy(tab[i:], tab[i+1:])
+	tab[len(tab)-1] = ""
+	tab = tab[:len(tab)-1]
+	return tab
+}
+
 func printErrorMsg(msg string) {
 	fmt.Println("Error: expert-system")
 	fmt.Println(msg)
