@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 /* idées pour resolve :
 - prendre la premiere querie
@@ -12,6 +15,7 @@ import "fmt"
 
 func rulesLoop(querie string, rules []sRule) {
 	//for i := 0; i < len(rules); i++ {
+
 	for i := 0; i < 1; i++ {
 		fmt.Println(rules[i])
 		//* fonction resolve ONE rule */
@@ -20,22 +24,31 @@ func rulesLoop(querie string, rules []sRule) {
 		fmt.Println("impliquent= ", rules[i].Conclusion)
 		fmt.Println("len faits= ", len(rules[i].Facts))
 		fmt.Println("len Conclusion= ", len(rules[i].Conclusion))
+		/*test si presence not*/
 		if len(rules[i].Facts) == 1 && len(rules[i].Conclusion) == 1 {
-			
-			
-			// valeur, ok := vars[rules[i].Facts[0]]
-			// valeur2, ok2 := vars[rules[i].Conclusion[0]]
-
-			/*test si presence not*/
-			// if ok && ok2 { // si existent deja toute les 2 on verifie qu'elles sont egales
-			// 	if valeur == valeur2 {
-			// 		continue
-			// 	} else { //sinon on print err contradictoire
-			// 		printErrorMsg("System as contradictions please review input")
-			// 	}
-			// } else {
-
-			// }
+			negation := false
+			if strings.Contains(rules[i].Facts[0], "!") || strings.Contains(rules[i].Conclusion[0], "!") {
+				negation = true
+			}
+			if vars[rules[i].Facts[0]] != "" && vars[rules[i].Conclusion[0]] != "" { // si existent deja toute les 2
+				if vars[rules[i].Facts[0]] == vars[rules[i].Conclusion[0]] { //on verifie qu'elles sont egales
+					continue
+				} else { //sinon on print err contradictoire
+					printErrorMsg("System as contradictions please review input")
+				}
+			} else { // sinon on assigne la valur de celle qui n'est pas vide à celle qui l'est
+				if vars[rules[i].Facts[0]] != "" {
+					if negation && vars[rules[i].Facts[0]] == "true" {
+						vars[rules[i].Conclusion[0]] = "false"
+					} else if negation && vars[rules[i].Facts[0]] == "false" {
+						vars[rules[i].Conclusion[0]] = "true"
+					} else {
+						vars[rules[i].Conclusion[0]] = vars[rules[i].Facts[0]]
+					}
+				} else {
+					vars[rules[i].Facts[0]] = vars[rules[i].Conclusion[0]]
+				}
+			}
 		}
 		//on rajoute les valeurs trouvées et on return ok
 		//ou on ne trouve rien et on retrurn false
