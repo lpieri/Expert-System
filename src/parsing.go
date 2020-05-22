@@ -14,22 +14,6 @@ func removeComment(line string) string {
 	return newLine
 }
 
-func checkFormat(line string) bool {
-	fmt.Println(line)
-
-	re := regexp.MustCompile("^\\!?[A-Z]{1}(\\s+(\\+|\\||\\^)?\\s+\\!?[A-Z]{1})*")
-	//split au signe '=>'
-	//dfaire la reg ex sur les 2 cotés
-	fmt.Println(re.MatchString(line))
-	//rest := re.Split(line, 2)
-	//lenRest := len(rest)
-	fmt.Println(re.Split(line, 2))
-	// if strings.Contains(line, "=>") == false || lenRest > 0 {
-	// 	return true
-	// }
-	return false
-}
-
 func addVar(tab []string) {
 	for i := 0; i < len(tab); i++ {
 		if tab[i] != "+" && tab[i] != "^" && tab[i] != "|" {
@@ -41,11 +25,101 @@ func addVar(tab []string) {
 	}
 }
 
+func checkerror(lineSplit []string) bool {
+	//decouper l
+	//check apres decoupage
+
+	fmt.Println(lineSplit)
+	cmp := 0
+	lastOpened := 0
+	for i := 0; i < len(lineSplit); i++ {
+		s := lineSplit[i]
+		for j := 0; j < len(s); j++ {
+			if s[i] == '(' {
+				lastOpened = i
+				cmp++
+			} else if s[i] == ')' {
+				//sub string lastopened : i
+				// checkerror(substring)
+				//resolve(substring) return TRUE or FALSE OR undef
+				cmp--
+				//lastOpened = i
+			}
+		}
+		//si cmp != 0 ==> error
+	}
+
+	//A + ((B + C) + D)
+
+	// for i := 0; i < len(lineSplit); i++ {
+	// 	p := strings.Split(strings.TrimSpace(lineSplit[i]), "(")
+	// 	fmt.Println(p)
+	// 	var i int
+	// 	if p[0] == "!" || p[0] == "" {
+	// 		i = 1
+	// 	} else {
+	// 		i = 0
+	// 	}
+	// 	for ; i < len(p); i++ {
+	// 		s := strings.Split(strings.TrimSpace(p[i]), ")")[0]
+	// 		fmt.Println(s)
+	// 		re := regexp.MustCompile("^\\!?[A-Z]{1}(\\s+(\\+|\\||\\^)?\\s+\\!?[A-Z]{1})*")
+	// 		fmt.Println(re.MatchString(s))
+	// 	}
+
+		// (H + D (H + ) P)
+		// (H + D (H + P))
+		//A + (B | C) + C => A + , B | C) + C
+		/*
+			Normal:
+			[!(H ^ G)   !(F + C)]
+			[! H ^ G)]
+			H ^ G
+			true
+			[! F + C)]
+			F + C
+			true
+
+			Pas normal: valide h + espace c'est degueux
+			[(H + D (H + ) P)   C]
+			[ H + D  H + ) P)]
+			H + D
+			true
+			H +   ???
+			true
+			[C]
+			C
+			true
+
+			Normal:
+			[(H + D (H + P))   C]
+			[ H + D  H + P))]
+			H + D
+			true
+			H + P
+			true
+			[C]
+			C
+			true
+		*/
+	}
+	return true
+}
+
 func getRule(line string) sRule {
+
+	//parenthese ok :  ^(\!)?(?<parenthse>\()?[A-Z]{1}(\s+(\+|\||\^)?\s+)(\!?[A-Z]{1})*(?(parenthse)\)|\s*)
+	// /re := regexp.MustCompile("^\\!?[A-Z]{1}(\\s+(\\+|\\||\\^)?\\s+\\!?[A-Z]{1})*")
+
 	if strings.Contains(line, "<=>") {
 		printErrorMsg("'<=>' This is a bonus")
+	} else if strings.Contains(line, "=>") == false {
+		printErrorMsg("The file is badly formatted, please check it.")
 	}
 	lineSplit := strings.Split(line, "=>")
+	if checkerror(lineSplit) == false {
+		printErrorMsg("The file is badly formatted, please check it.")
+	}
 	facts := strings.Split(strings.TrimSpace(lineSplit[0]), " ")
 	conclusion := strings.Split(strings.TrimSpace(lineSplit[1]), " ")
 	addVar(facts)
@@ -60,9 +134,7 @@ func parseFile(data string) sFile {
 	nbLines := len(lines)
 	for i := 0; i < nbLines; i++ {
 		line := removeComment(string(lines[i]))
-		if checkFormat(line) {
-			printErrorMsg("The file is badly formatted, please check it.")
-		} else if len(line) > 0 {
+		if len(line) > 0 {
 			if line[0] != '=' && line[0] != '?' {
 				file.Rules = append(file.Rules, getRule(line))
 			} else if line[0] == '=' {
