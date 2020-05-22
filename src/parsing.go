@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"io/ioutil"
 	"strings"
 )
@@ -13,12 +14,14 @@ func removeComment(line string) string {
 }
 
 func addVar(tab []string) {
+	var lettre string
 	for i := 0; i < len(tab); i++ {
+		lettre = tab[i]
 		if tab[i] != "+" && tab[i] != "^" && tab[i] != "|" {
 			if strings.Contains(tab[i], "!") {
-				tab[i] = tab[i][1:]
+				lettre = tab[i][1:]
 			}
-			vars[tab[i]] = ""
+			vars[lettre] = ""
 		}
 	}
 }
@@ -29,10 +32,13 @@ func getRule(line string) sRule {
 	}
 	lineSplit := strings.Split(line, "=>")
 	facts := strings.Split(strings.TrimSpace(lineSplit[0]), " ")
+	fmt.Println("Fact in parser = ", facts)
 	conclusion := strings.Split(strings.TrimSpace(lineSplit[1]), " ")
+	rule := sRule{Conclusion: conclusion, Facts: facts}
 	addVar(facts)
 	addVar(conclusion)
-	rule := sRule{Conclusion: conclusion, Facts: facts}
+
+	fmt.Println("Rules in parser = ", rule)
 	return rule
 }
 
