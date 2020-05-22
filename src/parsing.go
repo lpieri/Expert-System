@@ -16,14 +16,17 @@ func removeComment(line string) string {
 
 func checkFormat(line string) bool {
 	fmt.Println(line)
-	re := regexp.MustCompile("([A-Z]\\s\\=\\>\\s[A-Z])")
+
+	re := regexp.MustCompile("^\\!?[A-Z]{1}(\\s+(\\+|\\||\\^)?\\s+\\!?[A-Z]{1})*")
+	//split au signe '=>'
+	//dfaire la reg ex sur les 2 cotés
 	fmt.Println(re.MatchString(line))
-	rest := re.Split(line, 2)
-	lenRest := len(rest)
+	//rest := re.Split(line, 2)
+	//lenRest := len(rest)
 	fmt.Println(re.Split(line, 2))
-	if strings.Contains(line, "=>") == false || lenRest > 0 {
-		return true
-	}
+	// if strings.Contains(line, "=>") == false || lenRest > 0 {
+	// 	return true
+	// }
 	return false
 }
 
