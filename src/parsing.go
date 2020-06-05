@@ -19,7 +19,13 @@ func addVar(tab []string) {
 		lettre = tab[i]
 		if tab[i] != "+" && tab[i] != "^" && tab[i] != "|" {
 			if strings.Contains(tab[i], "!") {
-				lettre = tab[i][1:]
+				lettre = strings.Replace(tab[i], "!", "", -1)
+			}
+			if strings.Contains(tab[i], "(") {
+				lettre = strings.Replace(tab[i], "(", "", -1)
+			}
+			if strings.Contains(tab[i], ")") {
+				lettre = strings.Replace(tab[i], ")", "", -1)
 			}
 			vars[lettre] = ""
 		}

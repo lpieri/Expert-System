@@ -11,46 +11,58 @@ type Tree struct {
 	Right *Tree
 }
 
-func serchForParentheses(rule []string) (int, int) {
+func serchForParentheses(rule string) (int, int) {
 	println("rule in parentheses = ", rule)
 	first := -1
 	last := -1
 	for i := 0; i < len(rule); i++ {
-		println("i = ", i, "  rrule[i] = ", rule[i])
-		if strings.Contains(rule[i], "(") {
+		println("i = ", i, "  rrule[i] = ", string(rule[i]))
+		if rule[i] == '(' {
 			first = i
-		} else if strings.Contains(rule[i], ")") && i > first && first != -1 {
+		} else if rule[i] == ')' && i > first {
+			if first == -1 {
+				printErrorMsg("Error in input file, please check the parentheses")
+			}
 			last = i
-		} else {
-			printErrorMsg("Error in input file, please check the parentheses")
 		}
 	}
-	if !(strings.Contains(rule[first-1], "+|^")) {
-		printErrorMsg("Error in input file, please check the parentheses")
+	if !(strings.Contains("+|^", string(rule[first-1]))) {
+		printErrorMsg("Error in input file, please check the parentheses2")
 	}
 	return first, last
 }
 
-func isPrio(rule []string) bool {
-	i, j := serchForParentheses(rule)
-	println("i, j = ", i, " , ", j)
-	for i := i; i <= j; i++ {
-		//shit mauvais sens
+func isPrio(t *Tree, rule string) *Tree {
+	if strings.Contains(rule, "^") && !strings.Contains(rule, "(") {
+		tab := strings.Split(rule, "^")
+		println("tab[0] =", strings.TrimSpace(tab[0]))
+		println("tab[1] =", strings.TrimSpace(tab[1]))
+		t.Value = "^"
+		t.Left = isPrio(t.Left, strings.TrimSpace(tab[0]))
+		t.Right = isPrio(t.Right, strings.TrimSpace(tab[1]))
+	} else if strings.Contains(rule, "|") && !strings.Contains(rule, "(") {
+		tab := strings.Split(rule, "|")
+		println("tab[0] =", strings.TrimSpace(tab[0]))
+		println("tab[1] =", strings.TrimSpace(tab[1]))
+		t.Value = "|"
+		t.Left = isPrio(t.Left, strings.TrimSpace(tab[0]))
+		t.Right = isPrio(t.Right, strings.TrimSpace(tab[1]))
+	} else if strings.Contains(rule, "+") && !strings.Contains(rule, "(") {
+		tab := strings.Split(rule, "+")
+		println("tab[0] =", strings.TrimSpace(tab[0]))
+		println("tab[1] =", strings.TrimSpace(tab[1]))
+		t.Value = "+"
+		t.Left = isPrio(t.Left, strings.TrimSpace(tab[0]))
+		t.Right = isPrio(t.Right, strings.TrimSpace(tab[1]))
+	} else if strings.Contains(rule, "()") {
+		i, j := serchForParentheses(rule)
+		print("i, j  == ", i, " , ", j) // faire des trucs avec les parenthese
+	} else {
+		println("rule in fucking isPRio", rule)
+		//t.Value = strings.TrimSpace(rule)
 	}
-	return true
+	return t
 }
-
-// func insert(t *Tree, v string) *Tree {
-// 	if t == nil {
-// 		return &Tree{nil, v, nil}
-// 	}
-// 	if isPrio(v, t.Value) {
-// 		t.Left = insert(t.Left, v)
-// 	} else {
-// 		t.Right = insert(t.Right, v)
-// 	}
-// 	return t
-// }
 
 func newTree(rule []string) *Tree {
 	var t *Tree
@@ -59,8 +71,11 @@ func newTree(rule []string) *Tree {
 	// 	print(elem)
 	// 	t = insert(t, elem)
 	// }
-	depart := isPrio(rule)
-	println(depart)
+
+	concat := strings.Join(rule, "")
+	fmt.Println("concat = ", concat)
+	depart := isPrio(t, concat)
+	println("depart = ", treeToString(depart))
 	return t
 }
 

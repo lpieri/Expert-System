@@ -1,6 +1,6 @@
 #A + B => C + D
-A + Z | (A + (B + C)) => Y
-#B + D => X
+#!A + Z | (A + (B + C)) => Y
+B + D => X
 #A => E
 
 =AB
