@@ -1,7 +1,12 @@
 #A + B => C + D
-#!A + Z | (A + (B + C)) => Y
-B + D => X
+!A + Z | (A ^ (B + C) ^ Q) => Y
+#B + D | C => X
 #A => E
 
 =AB
 ?CDXYE
+
+#         |
+#     +       + 
+# !A   Z    a    + 
+#              B   C
