@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 type Tree struct {
 	Left  *Tree
@@ -8,8 +11,29 @@ type Tree struct {
 	Right *Tree
 }
 
+func serchForParentheses(rule []string) (int, int) {
+	println("rule in parentheses = ", rule)
+	first := -1
+	last := -1
+	for i := 0; i < len(rule); i++ {
+		println("i = ", i, "  rrule[i] = ", rule[i])
+		if strings.Contains(rule[i], "(") {
+			first = i
+		} else if strings.Contains(rule[i], ")") && i > first && first != -1 {
+			last = i
+		} else {
+			printErrorMsg("Error in input file, please check the parentheses")
+		}
+	}
+	return first, last
+}
+
 func isPrio(rule []string) bool {
-	
+	i, j := serchForParentheses(rule)
+	println("i, j = ", i, " , ", j)
+	for i := i; i <= j; i++ {
+		
+	}
 	return true
 }
 
