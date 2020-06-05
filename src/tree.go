@@ -25,6 +25,9 @@ func serchForParentheses(rule []string) (int, int) {
 			printErrorMsg("Error in input file, please check the parentheses")
 		}
 	}
+	if !(strings.Contains(rule[first-1], "+|^")) {
+		printErrorMsg("Error in input file, please check the parentheses")
+	}
 	return first, last
 }
 
@@ -32,7 +35,7 @@ func isPrio(rule []string) bool {
 	i, j := serchForParentheses(rule)
 	println("i, j = ", i, " , ", j)
 	for i := i; i <= j; i++ {
-		
+		//shit mauvais sens
 	}
 	return true
 }
