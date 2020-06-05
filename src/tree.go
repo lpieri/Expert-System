@@ -37,6 +37,9 @@ func isPrio(t *Tree, rule string) *Tree {
 		tab := strings.Split(rule, "^")
 		println("tab[0] =", strings.TrimSpace(tab[0]))
 		println("tab[1] =", strings.TrimSpace(tab[1]))
+		if t == nil {
+			t = &Tree{nil, "^", nil}
+		}
 		t.Value = "^"
 		t.Left = isPrio(t.Left, strings.TrimSpace(tab[0]))
 		t.Right = isPrio(t.Right, strings.TrimSpace(tab[1]))
@@ -44,6 +47,9 @@ func isPrio(t *Tree, rule string) *Tree {
 		tab := strings.Split(rule, "|")
 		println("tab[0] =", strings.TrimSpace(tab[0]))
 		println("tab[1] =", strings.TrimSpace(tab[1]))
+		if t == nil {
+			t = &Tree{nil, "|", nil}
+		}
 		t.Value = "|"
 		t.Left = isPrio(t.Left, strings.TrimSpace(tab[0]))
 		t.Right = isPrio(t.Right, strings.TrimSpace(tab[1]))
@@ -51,15 +57,21 @@ func isPrio(t *Tree, rule string) *Tree {
 		tab := strings.Split(rule, "+")
 		println("tab[0] =", strings.TrimSpace(tab[0]))
 		println("tab[1] =", strings.TrimSpace(tab[1]))
+		if t == nil {
+			t = &Tree{nil, "+", nil}
+		}
 		t.Value = "+"
 		t.Left = isPrio(t.Left, strings.TrimSpace(tab[0]))
 		t.Right = isPrio(t.Right, strings.TrimSpace(tab[1]))
 	} else if strings.Contains(rule, "()") {
 		i, j := serchForParentheses(rule)
 		print("i, j  == ", i, " , ", j) // faire des trucs avec les parenthese
-	} else {
+	} else if len(strings.TrimSpace(rule)) == 1 {
+		if t == nil {
+			t = &Tree{nil, strings.TrimSpace(rule), nil}
+		}
 		println("rule in fucking isPRio", rule)
-		//t.Value = strings.TrimSpace(rule)
+		t.Value = strings.TrimSpace(rule)
 	}
 	return t
 }
@@ -76,7 +88,7 @@ func newTree(rule []string) *Tree {
 	fmt.Println("concat = ", concat)
 	depart := isPrio(t, concat)
 	println("depart = ", treeToString(depart))
-	return t
+	return depart
 }
 
 func treeToString(t *Tree) string {
