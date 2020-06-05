@@ -34,6 +34,9 @@ func getRule(line string) sRule {
 	facts := strings.Split(strings.TrimSpace(lineSplit[0]), " ")
 	fmt.Println("Fact in parser = ", facts)
 	conclusion := strings.Split(strings.TrimSpace(lineSplit[1]), " ")
+	if len(lineSplit) != 2 {
+		printErrorMsg("Error no '[fact] => [conclusion]' found in rules, please review the format of the input file")
+	}
 	rule := sRule{Conclusion: conclusion, Facts: facts}
 	addVar(facts)
 	addVar(conclusion)

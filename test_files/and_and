@@ -1,6 +1,7 @@
 A + B => C + D
 A + Z => Y
 B + D => X
+A => E
 
 =AB
-?CDXY
+?CDXYE
