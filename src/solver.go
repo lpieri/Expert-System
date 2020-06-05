@@ -44,9 +44,10 @@ func rulesLoop(querie string, rules []sRule) {
 					}
 				}
 			}
+		} else { /*-----------------------------------               CAS Aute               ------------------------------------*/
+			titi := newTree(rules[i].Facts)
+			println("\nTREEEEEE", treeToString(titi))
 		}
-		/*-----------------------------------               CAS Aute               ------------------------------------*/
-		
 	}
 }
 

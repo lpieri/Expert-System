@@ -20,6 +20,7 @@ SRC_NAME= 	main.go		\
 			parsing.go	\
 			tools.go	\
 			solver.go	\
+			tree.go		\
 			global.go
 
 SRC		=	$(addprefix $(SRC_PATH)/,$(SRC_NAME))
