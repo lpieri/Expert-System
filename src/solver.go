@@ -13,42 +13,64 @@ Arbre binaire
 - construire arbre binaire
 - resoudre en parcourant arbre
 */
-func rulesLoop(querie string, rules []sRule) {
-	for i := 0; i < len(rules); i++ {
-		fmt.Printf("Vars = %#v\n", vars)
-		/*-----------------------------------               CAS N*1 : A = B               ------------------------------------*/
-		if len(rules[i].Facts) == 1 && len(rules[i].Conclusion) == 1 {
-			negation := false
-			if strings.Contains(rules[i].Facts[0], "!") || strings.Contains(rules[i].Conclusion[0], "!") {
-				negation = true
-			}
-			if vars[rules[i].Facts[0]] != "" && vars[rules[i].Conclusion[0]] != "" { // si existent deja toute les 2
-				//fmt.Println("Toutes les 2 pas vide = ", vars[rules[i].Facts[0]], "     |      ", vars[rules[i].Conclusion[0]])
-				if vars[rules[i].Facts[0]] == vars[rules[i].Conclusion[0]] { //on verifie qu'elles sont egales
-					continue
-				} else { //sinon on print err contradictoire
-					printErrorMsg("System as contradictions please review input")
-				}
-			} else { // sinon on assigne la valeur de celle qui esst dans fact a l'autre
-				if vars[rules[i].Facts[0]] != "" {
-					bFacts, err2 := strconv.ParseBool(vars[rules[i].Facts[0]])
-					if err2 == nil {
-						//fmt.Println("fact pas vide =", vars[rules[i].Facts[0]])
-						if negation {
-							vars[rules[i].Conclusion[0]] = strconv.FormatBool(!bFacts)
-						} else {
-							vars[rules[i].Conclusion[0]] = vars[rules[i].Facts[0]]
-						}
-					} else {
-						printError(err2)
-					}
-				}
-			}
-		} else { /*-----------------------------------               CAS Aute               ------------------------------------*/
-			titi := newTree(rules[i].Facts)
-			println("\nTREEEEEE", treeToString(titi))
+
+func fillTree(querie string, rule sRule) *Tree {
+	fmt.Printf("Vars = %#v\n", vars)
+	if len(rule.Facts) == 1 && len(rule.Conclusion) == 1 {
+		negation := false
+		if strings.Contains(rule.Facts[0], "!") || strings.Contains(rule.Conclusion[0], "!") {
+			negation = true
 		}
+		if vars[rule.Facts[0]] != "" && vars[rule.Conclusion[0]] != "" { // si existent deja toute les 2
+			if vars[rule.Facts[0]] != vars[rule.Conclusion[0]] { //on verifie qu'elles sont egales
+				printErrorMsg("System as contradictions please review input")
+			}
+		} else { // sinon on assigne la valeur de celle qui esst dans fact a l'autre
+			if vars[rule.Facts[0]] != "" {
+				bFacts, err2 := strconv.ParseBool(vars[rule.Facts[0]])
+				if err2 == nil {
+					if negation {
+						vars[rule.Conclusion[0]] = strconv.FormatBool(!bFacts)
+					} else {
+						vars[rule.Conclusion[0]] = vars[rule.Facts[0]]
+					}
+				} else {
+					printError(err2)
+				}
+			}
+		}
+		return nil
+	} else {
+		titi := newTree(rule.Facts)
+		println("\nTREEEEEE : ", treeToString(titi))
+		return titi
 	}
+}
+
+func browseTree(t *Tree) string {
+	if t.Left != nil {
+		println("t left = ", t.Left.Value)
+		leftVal := browseTree(t.Left)
+	}
+	if t.Right != nil {
+		println("t right = ", t.Right.Value)
+		rightVal := browseTree(t.Right)
+	}
+
+	// 	println("t value = ", fmt.Sprint(t.Value))
+	// 	if vars[t.Left.Value] != "" && vars[t.Right.Value] != "" {
+	// 		if t.Value == "|" {
+	// 			left, err := strconv.ParseBool(vars[t.Left.Value])
+	// 			right, err2 := strconv.ParseBool(vars[t.Right.Value])
+	// 			if err == nil && err2 == nil {
+	// 				res := left || right
+	// 				print("res = ", res)
+	// 				return strconv.FormatBool(res)
+	// 			}
+	// 		}
+	// 	} else {
+	// 		return ""
+	// 	}
 }
 
 func resolve(file sFile) {
@@ -63,7 +85,18 @@ func resolve(file sFile) {
 			lenQueries--
 			continue
 		} else {
-			rulesLoop(file.Queries[i], file.Rules)
+			cmpt := 0
+			for j := 0; j < len(file.Rules); j++ {
+				cmpt++
+				t := fillTree(file.Queries[i], file.Rules[j])
+				if t == nil {
+					continue
+				} else if cmpt > len(file.Rules) {
+					printErrorMsg("resolution impossible, please change the input")
+					break
+				}
+				browseTree(t)
+			}
 		}
 	}
 	fmt.Println("Init = ", file.Init[:])
