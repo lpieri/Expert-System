@@ -47,30 +47,72 @@ func fillTree(querie string, rule sRule) *Tree {
 	}
 }
 
-func browseTree(t *Tree) string {
-	if t.Left != nil {
-		println("t left = ", t.Left.Value)
-		leftVal := browseTree(t.Left)
+func logiqueresolv(val1 string, ope string, val2 string) string {
+	res := ""
+	println("dans logique resolved\nval1 = ", val1, "    ope = ", ope, "    val2 = ", val2)
+	left, err := strconv.ParseBool(val1)
+	right, err2 := strconv.ParseBool(val2)
+	println("left = ", left, "  right = ", right)
+	if err == nil && err2 == nil {
+		println("left = ", left, "  right = ", right)
+		if strings.TrimSpace(ope) == "|" {
+			res = strconv.FormatBool(left || right)
+			print("res = ", res)
+			return res
+		} else if strings.TrimSpace(ope) == "+" {
+			res = strconv.FormatBool(left && right)
+			print("res = ", res)
+			return res
+		} else {
+			res = strconv.FormatBool((left || right) && !(left && right))
+			print("res = ", res)
+			return res
+		}
+	} else {
+		fmt.Println("resolveNode: left:", left, "right:", right)
+		if (left == true || right == true) && ope == "|" {
+			return "true"
+		} else if (left == false || right == false) && ope == "+" {
+			return "false"
+		}
+		// fmt.Println("Return val of browseTree val: undefine")
+		return "undefine"
 	}
-	if t.Right != nil {
-		println("t right = ", t.Right.Value)
-		rightVal := browseTree(t.Right)
-	}
+}
 
-	// 	println("t value = ", fmt.Sprint(t.Value))
-	// 	if vars[t.Left.Value] != "" && vars[t.Right.Value] != "" {
-	// 		if t.Value == "|" {
-	// 			left, err := strconv.ParseBool(vars[t.Left.Value])
-	// 			right, err2 := strconv.ParseBool(vars[t.Right.Value])
-	// 			if err == nil && err2 == nil {
-	// 				res := left || right
-	// 				print("res = ", res)
-	// 				return strconv.FormatBool(res)
-	// 			}
-	// 		}
-	// 	} else {
-	// 		return ""
-	// 	}
+func browseTree(t *Tree) string {
+	leftVal := ""
+	rightVal := ""
+	println("t value = ", fmt.Sprint(t.Value))
+	//si val actuelle != lettre
+	if strings.ContainsAny(t.Value, "+|^") {
+		//on rappele browse tree : leftVal = browseTree(t.Left)
+		if t.Left != nil {
+			println("t left = ", t.Left.Value)
+			leftVal = browseTree(t.Left)
+		}
+		if t.Right != nil {
+			println("t right = ", t.Right.Value)
+			rightVal = browseTree(t.Right)
+		}
+		t.Value = logiqueresolv(leftVal, t.Value, rightVal)
+		t.Left = nil
+		t.Right = nil
+		return t.Value
+	} else { //si lettre
+		if strings.ContainsAny(t.Value, "!") {
+			val, err := strconv.ParseBool(vars[t.Value[1:]])
+			if err == nil {
+				return strconv.FormatBool(!val)
+			} else {
+				printErrorMsg("ERROR")
+				return "error"
+			}
+		}
+		println("t.Value 2 = ", t.Value)
+		println("vars[t.Value] = ", vars[t.Value])
+		return vars[t.Value]
+	}
 }
 
 func resolve(file sFile) {
@@ -95,7 +137,13 @@ func resolve(file sFile) {
 					printErrorMsg("resolution impossible, please change the input")
 					break
 				}
-				browseTree(t)
+				res := browseTree(t)
+				println("AFTER === ", treeToString(t), "   res = ", res)
+				vars[file.Queries[i]] = res
+				file.Queries = removeIndexFormTab(i, file.Queries)
+				i--
+				lenQueries--
+				continue
 			}
 		}
 	}
