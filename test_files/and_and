@@ -1,9 +1,9 @@
-#A + B => C
-!A + Z | (A ^ (B + C) ^ Q) => Y
+A + B => C
+#!A + Z | (A ^ (B + C) ^ Q) => Y
 #B + D | C => X
 #A => E
 
-=ABZCQ
+=AB
 ?Y
 
 #         |

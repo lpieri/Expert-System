@@ -135,15 +135,29 @@ func resolve(file sFile) {
 					continue
 				} else if cmpt > len(file.Rules) {
 					printErrorMsg("resolution impossible, please change the input")
-					break
 				}
 				res := browseTree(t)
 				println("AFTER === ", treeToString(t), "   res = ", res)
-				vars[file.Queries[i]] = res
-				file.Queries = removeIndexFormTab(i, file.Queries)
-				i--
-				lenQueries--
-				continue
+				if res != "undefine" {
+					println("lolilol")
+					if vars[file.Queries[i]] != "" {
+						println("lolilol222")
+						if vars[file.Queries[i]] == res {
+							println("lolilol3333")
+							file.Queries = removeIndexFormTab(i, file.Queries)
+							i--
+							lenQueries--
+						} else {
+							printErrorMsg("Contradiction in the variable values, please check the input!")
+						}
+					} else {
+						println("lolilol4444")
+						vars[file.Queries[i]] = res
+						file.Queries = removeIndexFormTab(i, file.Queries)
+						i--
+						lenQueries--
+					}
+				}
 			}
 		}
 	}
