@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
-	"regexp"
 	"strings"
 )
 
@@ -25,18 +24,41 @@ func addVar(tab []string) {
 	}
 }
 
+func checkParenthese(line string) bool {
+	nbPtOpen := 0
+	// nbPtClosed := 0
+	println("prout:", line)
+	s := strings.ReplaceAll(line, " ", "")
+	for i := 0; i < len(line); i++ {
+		if s[i] == '(' {
+			//si char avant( n'est pas dans "|^+("  (ou debur de chaine) ==> alors erreur
+			//sinon ok, on continu
+			// si char apres ( est dans "|^+" alors erreur  ==> erreur
+			//sinon ok on continu
+			nbPtOpen++
+		}
+		//si char apres ) n'est pas dans "|^+)" (ou fin de chaine) ==> alors erreur
+		//sinon ok, on continu
+		// si char avant ) est dans "|^+" alors erreur  ==> erreur
+		//sinon ok on continu
+	}
+	//verif que nbPtOpen et nbPtClosed sont egaux sinon erreur
+	// if ce n'est pas bon return false
+	return true
+}
+
 func checkerror(lineSplit []string) bool {
 	//decouper l
 	//check apres decoupage
-
 	fmt.Println(lineSplit)
 	cmp := 0
-	lastOpened := 0
+	// var lastOpened int = 0
 	for i := 0; i < len(lineSplit); i++ {
+		checkParenthese(lineSplit[i])
 		s := lineSplit[i]
 		for j := 0; j < len(s); j++ {
 			if s[i] == '(' {
-				lastOpened = i
+				// lastOpened = i
 				cmp++
 			} else if s[i] == ')' {
 				//sub string lastopened : i
@@ -67,49 +89,48 @@ func checkerror(lineSplit []string) bool {
 	// 		fmt.Println(re.MatchString(s))
 	// 	}
 
-		// (H + D (H + ) P)
-		// (H + D (H + P))
-		//A + (B | C) + C => A + , B | C) + C
-		/*
-			Normal:
-			[!(H ^ G)   !(F + C)]
-			[! H ^ G)]
-			H ^ G
-			true
-			[! F + C)]
-			F + C
-			true
+	// (H + D (H + ) P)
+	// (H + D (H + P))
+	//A + (B | C) + C => A + , B | C) + C
+	/*
+		Normal:
+		[!(H ^ G)   !(F + C)]
+		[! H ^ G)]
+		H ^ G
+		true
+		[! F + C)]
+		F + C
+		true
 
-			Pas normal: valide h + espace c'est degueux
-			[(H + D (H + ) P)   C]
-			[ H + D  H + ) P)]
-			H + D
-			true
-			H +   ???
-			true
-			[C]
-			C
-			true
+		Pas normal: valide h + espace c'est degueux
+		[(H + D (H + ) P)   C]
+		[ H + D  H + ) P)]
+		H + D
+		true
+		H +   ???
+		true
+		[C]
+		C
+		true
 
-			Normal:
-			[(H + D (H + P))   C]
-			[ H + D  H + P))]
-			H + D
-			true
-			H + P
-			true
-			[C]
-			C
-			true
-		*/
-	}
+		Normal:
+		[(H + D (H + P))   C]
+		[ H + D  H + P))]
+		H + D
+		true
+		H + P
+		true
+		[C]
+		C
+		true
+	*/
 	return true
 }
 
 func getRule(line string) sRule {
 
 	//parenthese ok :  ^(\!)?(?<parenthse>\()?[A-Z]{1}(\s+(\+|\||\^)?\s+)(\!?[A-Z]{1})*(?(parenthse)\)|\s*)
-	// /re := regexp.MustCompile("^\\!?[A-Z]{1}(\\s+(\\+|\\||\\^)?\\s+\\!?[A-Z]{1})*")
+	// re := regexp.MustCompile("^\\!?[A-Z]{1}(\\s+(\\+|\\||\\^)?\\s+\\!?[A-Z]{1})*")
 
 	if strings.Contains(line, "<=>") {
 		printErrorMsg("'<=>' This is a bonus")
