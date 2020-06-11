@@ -1,8 +1,8 @@
 package main
 
 import (
-	"fmt"
 	"io/ioutil"
+	"regexp"
 	"strings"
 )
 
@@ -33,107 +33,66 @@ func checkParenthese(line string) bool {
 		if s[i] == '(' {
 			if i > 0 {
 				if s[i-1] != '|' && s[i-1] != '+' && s[i-1] != '^' && s[i-1] != '(' {
-					printErrorMsg("Error: the parenthese wrong format")
+					return false
 				}
 			} else if s[i+1] == '|' || s[i+1] == '+' || s[i+1] == '^' {
-				printErrorMsg("Error: the parenthese wrong format")
+				return false
 			}
 			nbPtOpen++
 		}
 		if s[i] == ')' {
 			if s[i-1] == '|' || s[i-1] == '+' || s[i-1] == '^' {
-				printErrorMsg("Error: the parenthese wrong format")
+				return false
 			} else if i+1 < len {
 				if s[i+1] != '|' && s[i+1] != '+' && s[i+1] != '^' && s[i+1] != ')' {
-					printErrorMsg("Error: the parenthese wrong format")
+					return false
 				}
 			}
 			nbPtClosed++
 		}
 	}
 	if nbPtOpen != nbPtClosed {
-		printErrorMsg("Error: the parenthese wrong format")
+		return false
 	}
 	return true
 }
 
-func checkerror(lineSplit []string) bool {
-	//decouper l
-	//check apres decoupage
-	fmt.Println(lineSplit)
+func checkError(lineSplit []string) bool {
 	for i := 0; i < len(lineSplit); i++ {
-		checkParenthese(lineSplit[i])
-		println("after checkParenthese")
+		if checkParenthese(lineSplit[i]) == false {
+			return false
+		}
+		p := strings.Split(strings.TrimSpace(lineSplit[i]), "(")
+		y := 0
+		if p[0] == "" {
+			y++
+		}
+		for ; y < len(p); y++ {
+			s := strings.Split(strings.TrimSpace(p[y]), ")")[0]
+			if s[len(s)-1] == '+' || s[len(s)-1] == '|' || s[len(s)-1] == '^' {
+				s = s[:len(s)-1]
+			}
+			s = strings.TrimSpace(s)
+			re := regexp.MustCompile("^\\!?[A-Z]{1}(\\s+(\\+|\\||\\^)?\\s+\\!?[A-Z]{1})*")
+			rest := re.Split(s, -1)
+			for r := 0; r < len(rest); r++ {
+				if rest[r] != "" {
+					return false
+				}
+			}
+		}
 	}
-
-	//A + ((B + C) + D)
-
-	// for i := 0; i < len(lineSplit); i++ {
-	// 	p := strings.Split(strings.TrimSpace(lineSplit[i]), "(")
-	// 	fmt.Println(p)
-	// 	var i int
-	// 	if p[0] == "!" || p[0] == "" {
-	// 		i = 1
-	// 	} else {
-	// 		i = 0
-	// 	}
-	// 	for ; i < len(p); i++ {
-	// 		s := strings.Split(strings.TrimSpace(p[i]), ")")[0]
-	// 		fmt.Println(s)
-	// 		re := regexp.MustCompile("^\\!?[A-Z]{1}(\\s+(\\+|\\||\\^)?\\s+\\!?[A-Z]{1})*")
-	// 		fmt.Println(re.MatchString(s))
-	// 	}
-
-	// (H + D (H + ) P)
-	// (H + D (H + P))
-	//A + (B | C) + C => A + , B | C) + C
-	/*
-		Normal:
-		[!(H ^ G)   !(F + C)]
-		[! H ^ G)]
-		H ^ G
-		true
-		[! F + C)]
-		F + C
-		true
-
-		Pas normal: valide h + espace c'est degueux
-		[(H + D (H + ) P)   C]
-		[ H + D  H + ) P)]
-		H + D
-		true
-		H +   ???
-		true
-		[C]
-		C
-		true
-
-		Normal:
-		[(H + D (H + P))   C]
-		[ H + D  H + P))]
-		H + D
-		true
-		H + P
-		true
-		[C]
-		C
-		true
-	*/
 	return true
 }
 
 func getRule(line string) sRule {
-
-	//parenthese ok :  ^(\!)?(?<parenthse>\()?[A-Z]{1}(\s+(\+|\||\^)?\s+)(\!?[A-Z]{1})*(?(parenthse)\)|\s*)
-	// re := regexp.MustCompile("^\\!?[A-Z]{1}(\\s+(\\+|\\||\\^)?\\s+\\!?[A-Z]{1})*")
-
 	if strings.Contains(line, "<=>") {
 		printErrorMsg("'<=>' This is a bonus")
 	} else if strings.Contains(line, "=>") == false {
 		printErrorMsg("The file is badly formatted, please check it.")
 	}
 	lineSplit := strings.Split(line, "=>")
-	if checkerror(lineSplit) == false {
+	if checkError(lineSplit) == false {
 		printErrorMsg("The file is badly formatted, please check it.")
 	}
 	facts := strings.Split(strings.TrimSpace(lineSplit[0]), " ")

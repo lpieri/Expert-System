@@ -1,10 +1,11 @@
-#!(H ^ G) => !(F + C)
-#(H ^ G) => !(F + C)
-#(H + D (H + ) P) => C
-#(H + D | (H + ) P) => C
-#(H + D | (H + O) P) => C
-#(H + D + (H + P) => C
-H + D + (H + P)) => C
+# !(H ^ G) => !(F + C)			# In-valide
+# (H ^ G) => !(F + C)			# In-valide
+# (H + D (H + ) P) => C			# In-valide
+(H + D | (H + ) P) => C			# In-valide
+# (H + D | (H + O) P) => C		# In-valide
+# (H + D + (H + P) => C			# In-valide
+# H + D + (H + P)) => C			# In-valide
+# (H + D + (H + P)) => C		# Valide
 
 =AB
 ?C
