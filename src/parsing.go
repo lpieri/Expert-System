@@ -26,24 +26,34 @@ func addVar(tab []string) {
 
 func checkParenthese(line string) bool {
 	nbPtOpen := 0
-	// nbPtClosed := 0
-	println("prout:", line)
+	nbPtClosed := 0
 	s := strings.ReplaceAll(line, " ", "")
-	for i := 0; i < len(line); i++ {
+	len := len(s)
+	for i := 0; i < len; i++ {
 		if s[i] == '(' {
-			//si char avant( n'est pas dans "|^+("  (ou debur de chaine) ==> alors erreur
-			//sinon ok, on continu
-			// si char apres ( est dans "|^+" alors erreur  ==> erreur
-			//sinon ok on continu
+			if i > 0 {
+				if s[i-1] != '|' && s[i-1] != '+' && s[i-1] != '^' && s[i-1] != '(' {
+					printErrorMsg("Error: the parenthese wrong format")
+				}
+			} else if s[i+1] == '|' || s[i+1] == '+' || s[i+1] == '^' {
+				printErrorMsg("Error: the parenthese wrong format")
+			}
 			nbPtOpen++
 		}
-		//si char apres ) n'est pas dans "|^+)" (ou fin de chaine) ==> alors erreur
-		//sinon ok, on continu
-		// si char avant ) est dans "|^+" alors erreur  ==> erreur
-		//sinon ok on continu
+		if s[i] == ')' {
+			if s[i-1] == '|' || s[i-1] == '+' || s[i-1] == '^' {
+				printErrorMsg("Error: the parenthese wrong format")
+			} else if i+1 < len {
+				if s[i+1] != '|' && s[i+1] != '+' && s[i+1] != '^' && s[i+1] != ')' {
+					printErrorMsg("Error: the parenthese wrong format")
+				}
+			}
+			nbPtClosed++
+		}
 	}
-	//verif que nbPtOpen et nbPtClosed sont egaux sinon erreur
-	// if ce n'est pas bon return false
+	if nbPtOpen != nbPtClosed {
+		printErrorMsg("Error: the parenthese wrong format")
+	}
 	return true
 }
 
@@ -55,6 +65,7 @@ func checkerror(lineSplit []string) bool {
 	// var lastOpened int = 0
 	for i := 0; i < len(lineSplit); i++ {
 		checkParenthese(lineSplit[i])
+		println("after checkParenthese")
 		s := lineSplit[i]
 		for j := 0; j < len(s); j++ {
 			if s[i] == '(' {
