@@ -61,25 +61,9 @@ func checkerror(lineSplit []string) bool {
 	//decouper l
 	//check apres decoupage
 	fmt.Println(lineSplit)
-	cmp := 0
-	// var lastOpened int = 0
 	for i := 0; i < len(lineSplit); i++ {
 		checkParenthese(lineSplit[i])
 		println("after checkParenthese")
-		s := lineSplit[i]
-		for j := 0; j < len(s); j++ {
-			if s[i] == '(' {
-				// lastOpened = i
-				cmp++
-			} else if s[i] == ')' {
-				//sub string lastopened : i
-				// checkerror(substring)
-				//resolve(substring) return TRUE or FALSE OR undef
-				cmp--
-				//lastOpened = i
-			}
-		}
-		//si cmp != 0 ==> error
 	}
 
 	//A + ((B + C) + D)
