@@ -29,3 +29,9 @@ func printUsage() {
 	fmt.Println(" --input -i [file]\tInput file")
 	os.Exit(0)
 }
+
+func printResult(file sFile) {
+	for i := 0; i < len(file.Queries); i++ {
+		fmt.Println(file.Queries[i], "is", vars[string(file.Queries[i])])
+	}
+}

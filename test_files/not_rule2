@@ -1,4 +1,4 @@
-B + !C => A # A is true
+B + !C => A		# A is true
 
 =B
 ?A

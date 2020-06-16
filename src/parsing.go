@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"io/ioutil"
 	"strings"
 )
@@ -38,7 +37,7 @@ func getRule(line string) sRule {
 	}
 	lineSplit := strings.Split(line, "=>")
 	facts := strings.Split(strings.TrimSpace(lineSplit[0]), " ")
-	fmt.Println("Fact in parser = ", facts)
+	// fmt.Println("Fact in parser = ", facts)
 	conclusion := strings.Split(strings.TrimSpace(lineSplit[1]), " ")
 	if len(lineSplit) != 2 {
 		printErrorMsg("Error no '[fact] => [conclusion]' found in rules, please review the format of the input file")
@@ -46,8 +45,7 @@ func getRule(line string) sRule {
 	rule := sRule{Conclusion: conclusion, Facts: facts}
 	addVar(facts)
 	addVar(conclusion)
-
-	fmt.Println("Rules in parser = ", rule)
+	// fmt.Println("Rules in parser = ", rule)
 	return rule
 }
 

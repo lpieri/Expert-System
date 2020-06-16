@@ -1,12 +1,13 @@
-A + B => C
+A => B + !C
+#A + B => C
 #!A + Z | (A ^ (B + C) ^ Q) => Y
 #B + D | C => X
 #A => E
 
-=AB
-?Y
+=A
+?ABC
 
 #         |
-#     +       + 
-# !A   Z    a    + 
+#     +       +
+# !A   Z    a    +
 #              B   C
