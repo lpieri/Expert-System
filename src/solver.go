@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"strconv"
 	"strings"
 )
@@ -14,11 +13,11 @@ func fillTree(toTree []string) *Tree {
 }
 
 func backtraking(newLetter string) string {
-	println("Enter in backtraking -- Letter is:", newLetter)
+	// println("Enter in backtraking -- Letter is:", newLetter)
 	tab := checkLetterInConc(newLetter, gRules)
 	for i := 0; i < len(tab); i++ {
 		newFact := fillTree(gRules[tab[i]].Facts)
-		println("Backtraking tree facts:", treeToString(newFact))
+		// println("Backtraking tree facts:", treeToString(newFact))
 		newValue := browseTree(newFact)
 		if newValue == "" {
 			/*		if (leftVal == "true" || rightVal == "true") && ope == "|" {
@@ -31,7 +30,7 @@ func backtraking(newLetter string) string {
 			return "false"
 		}
 		if newValue == "true" {
-			println("newLetter:", newLetter, "=", newValue)
+			// println("newLetter:", newLetter, "=", newValue)
 			vars[newLetter] = newValue
 		}
 		return newValue
@@ -40,7 +39,7 @@ func backtraking(newLetter string) string {
 }
 
 func operatorResolver(leftVal string, ope string, rightVal string) string {
-	println("Enter dans operatorResolver avec :", leftVal, "et", rightVal)
+	// println("Enter dans operatorResolver avec :", leftVal, "et", rightVal)
 	res := ""
 	left, err := strconv.ParseBool(leftVal)
 	right, err2 := strconv.ParseBool(rightVal)
@@ -52,10 +51,10 @@ func operatorResolver(leftVal string, ope string, rightVal string) string {
 		} else {
 			res = strconv.FormatBool((left || right) && !(left && right))
 		}
-		println("Exit de operatorResolver 1 et res = ", res, "\n")
+		// println("Exit de operatorResolver 1 et res = ", res, "\n")
 		return res
 	} else {
-		println("Exit de operatorResolver 2 et res = ", res, "\n")
+		// println("Exit de operatorResolver 2 et res = ", res, "\n")
 		return ""
 	}
 
@@ -64,7 +63,7 @@ func operatorResolver(leftVal string, ope string, rightVal string) string {
 func browseTree(t *Tree) string {
 	leftVal := ""
 	rightVal := ""
-	println("Enter in browseTree with tree:", treeToString(t))
+	// println("Enter in browseTree with tree:", treeToString(t))
 	if strings.ContainsAny(t.Value, "+|^") {
 		if t.Left != nil {
 			leftVal = browseTree(t.Left)
@@ -72,15 +71,15 @@ func browseTree(t *Tree) string {
 		if t.Right != nil {
 			rightVal = browseTree(t.Right)
 		}
-		println("Tree before the before:", treeToString(t))
-		println("Before -- leftVal:", leftVal, "rightVal:", rightVal)
+		// println("Tree before the before:", treeToString(t))
+		// println("Before -- leftVal:", leftVal, "rightVal:", rightVal)
 		// if leftVal == "" {
 		// 	leftVal = backtraking(t.Left.Value)
 		// }
 		// if rightVal == "" {
 		// 	rightVal = backtraking(t.Right.Value)
 		// }
-		println("After -- leftVal:", t.Left.Value, "=", leftVal, "rightVal:", t.Right.Value, "=", rightVal, "\n")
+		// println("After -- leftVal:", t.Left.Value, "=", leftVal, "rightVal:", t.Right.Value, "=", rightVal, "\n")
 		// BACKTRAKING --- ici ---
 		// avec test est-ce que lettre inconnue est dans une partie droite? (if ==> [contient LETTRE])
 		// if backtraking est false alors on fait les tests suivants :
@@ -99,10 +98,10 @@ func browseTree(t *Tree) string {
 		}
 		if vars[t.Value] == "" {
 			newValue := backtraking(t.Value)
-			println("Exit browseTree t.Value: ", t.Value, "=", newValue)
+			// println("Exit browseTree t.Value: ", t.Value, "=", newValue)
 			return newValue
 		}
-		println("Exit browseTree t.Value: ", t.Value, "=", vars[t.Value])
+		// println("Exit browseTree t.Value: ", t.Value, "=", vars[t.Value])
 		return vars[t.Value]
 	}
 }
@@ -154,11 +153,11 @@ func resolve(file sFile) {
 		//for chaque regles
 		for j := 0; j < len(res); j++ {
 			tFact := fillTree(file.Rules[res[j]].Facts)
-			println("before browseTree of tree:", treeToString(tFact))
+			// println("before browseTree of tree:", treeToString(tFact))
 			querieRes := browseTree(tFact)
-			println("result of tree:", treeToString(tFact), "=", querieRes, "\n")
-			fmt.Printf("vars = %v\n", vars)
-			println("conclusion tree:", treeToString(fillTree(file.Rules[res[j]].Conclusion)), "=", querieRes, "\n")
+			// println("result of tree:", treeToString(tFact), "=", querieRes, "\n")
+			// fmt.Printf("vars = %v\n", vars)
+			// println("conclusion tree:", treeToString(fillTree(file.Rules[res[j]].Conclusion)), "=", querieRes, "\n")
 			browseConclusionTree(fillTree(file.Rules[res[j]].Conclusion), querieRes)
 		}
 		// println("int res checkletterinconc:", res, "facts:", treeToString(tFact))
