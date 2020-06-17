@@ -85,7 +85,7 @@ func openFile(fileName string) sFile {
 	} else {
 		data := string(bits)
 		file = parseFile(data)
-		if file.Queries == nil || file.Init == nil || file.Rules == nil {
+		if file.Queries == nil || file.Rules == nil {
 			printErrorMsg("Rules, Facts or Querie missing, please review your input file.")
 		}
 	}

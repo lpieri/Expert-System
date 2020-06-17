@@ -1,9 +1,8 @@
-B + C => A + B
-//D + E => D  // ici
+B + C => A
 D ^ E => B
 B => C
 
-=D
+=DE
 ?A
 
 # Avec fait initiaux = , A doit être égal à false

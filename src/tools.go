@@ -32,6 +32,9 @@ func printUsage() {
 
 func printResult(file sFile) {
 	for i := 0; i < len(file.Queries); i++ {
+		if vars[string(file.Queries[i])] == "" {
+			vars[string(file.Queries[i])] = "false"
+		}
 		fmt.Println(file.Queries[i], "is", vars[string(file.Queries[i])])
 	}
 }
