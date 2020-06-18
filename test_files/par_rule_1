@@ -1,7 +1,7 @@
 A | B + C => E
 (F | G) + H => E
 
-=AC
+=GH
 ?E
 
 # Avec fait initiaux =, E doit être égal à false	(ok)

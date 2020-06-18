@@ -92,6 +92,9 @@ func browseConclusionTree(t *Tree, res string) {
 			val, err := strconv.ParseBool(res)
 			if err == nil {
 				strVal := strconv.FormatBool(!val)
+				if vars[t.Value[1:]] != strVal && vars[t.Value[1:]] != "" {
+					printErrorMsg("Contradiction in the variable values, please check the input!")
+				}
 				vars[t.Value[1:]] = strVal
 			}
 			return
