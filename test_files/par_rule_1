@@ -1,5 +1,19 @@
- A | B  + C => E
+A | B + C => E
 (F | G) + H => E
 
-=GH
+=AC
 ?E
+
+# Avec fait initiaux =, E doit être égal à false	(ok)
+
+# Avec fait initiaux =A, E doit être égal à true	(ok)
+# Avec fait initiaux =B, E doit être égal à false	(ok)
+# Avec fait initiaux =C, E doit être égal à false	(ok)
+# Avec fait initiaux =AC, E doit être égal à true	(ok)
+# Avec fait initiaux =BC, E doit être égal à true	(ok)
+
+# Avec fait initiaux =F, E doit être égal à false	(ok)
+# Avec fait initiaux =G, E doit être égal à false	(ok)
+# Avec fait initiaux =H, E doit être égal à false	(ok)
+# Avec fait initiaux =FH, E doit être égal à true	(ok)
+# Avec fait initiaux =GH, E doit être égal à true	(ok)

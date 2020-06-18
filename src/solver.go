@@ -28,7 +28,7 @@ func backtraking(newLetter string) string {
 	return "false"
 }
 
-func operatorResolver(leftVal string, ope string, rightVal string) string {
+func operatorSolver(leftVal string, ope string, rightVal string) string {
 	res := ""
 	left, err := strconv.ParseBool(leftVal)
 	right, err2 := strconv.ParseBool(rightVal)
@@ -57,7 +57,7 @@ func browseTree(t *Tree) string {
 		if t.Right != nil {
 			rightVal = browseTree(t.Right)
 		}
-		t.Value = operatorResolver(leftVal, t.Value, rightVal)
+		t.Value = operatorSolver(leftVal, t.Value, rightVal)
 		t.Left = nil
 		t.Right = nil
 		return t.Value
