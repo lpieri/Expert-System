@@ -2,6 +2,7 @@ package main
 
 import (
 	"io/ioutil"
+	"regexp"
 	"strings"
 )
 
@@ -31,11 +32,77 @@ func addVar(tab []string) {
 	}
 }
 
+func checkParenthese(line string) bool {
+	nbPtOpen := 0
+	nbPtClosed := 0
+	s := strings.ReplaceAll(line, " ", "")
+	len := len(s)
+	for i := 0; i < len; i++ {
+		if s[i] == '(' {
+			if i > 0 {
+				if s[i-1] != '|' && s[i-1] != '+' && s[i-1] != '^' && s[i-1] != '(' {
+					return false
+				}
+			} else if s[i+1] == '|' || s[i+1] == '+' || s[i+1] == '^' {
+				return false
+			}
+			nbPtOpen++
+		}
+		if s[i] == ')' {
+			if s[i-1] == '|' || s[i-1] == '+' || s[i-1] == '^' {
+				return false
+			} else if i+1 < len {
+				if s[i+1] != '|' && s[i+1] != '+' && s[i+1] != '^' && s[i+1] != ')' {
+					return false
+				}
+			}
+			nbPtClosed++
+		}
+	}
+	if nbPtOpen != nbPtClosed {
+		return false
+	}
+	return true
+}
+
+func checkError(lineSplit []string) bool {
+	for i := 0; i < len(lineSplit); i++ {
+		if checkParenthese(lineSplit[i]) == false {
+			return false
+		}
+		p := strings.Split(strings.TrimSpace(lineSplit[i]), "(")
+		y := 0
+		if p[0] == "" {
+			y++
+		}
+		for ; y < len(p); y++ {
+			s := strings.Split(strings.TrimSpace(p[y]), ")")[0]
+			if s[len(s)-1] == '+' || s[len(s)-1] == '|' || s[len(s)-1] == '^' {
+				s = s[:len(s)-1]
+			}
+			s = strings.TrimSpace(s)
+			re := regexp.MustCompile("^\\!?[A-Z]{1}(\\s+(\\+|\\||\\^)?\\s+\\!?[A-Z]{1})*")
+			rest := re.Split(s, -1)
+			for r := 0; r < len(rest); r++ {
+				if rest[r] != "" {
+					return false
+				}
+			}
+		}
+	}
+	return true
+}
+
 func getRule(line string) sRule {
 	if strings.Contains(line, "<=>") {
 		printErrorMsg("'<=>' This is a bonus")
+	} else if strings.Contains(line, "=>") == false {
+		printErrorMsg("The file is badly formatted, please check it.")
 	}
 	lineSplit := strings.Split(line, "=>")
+	if checkError(lineSplit) == false {
+		printErrorMsg("The file is badly formatted, please check it.")
+	}
 	facts := strings.Split(strings.TrimSpace(lineSplit[0]), " ")
 	// fmt.Println("Fact in parser = ", facts)
 	conclusion := strings.Split(strings.TrimSpace(lineSplit[1]), " ")
