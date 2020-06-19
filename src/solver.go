@@ -1,167 +1,172 @@
 package main
 
 import (
-	"fmt"
 	"strconv"
 	"strings"
 )
 
-/* idées pour resolve :
-Arbre binaire
-- get_minus_prio() ==> trouve moins prioritaire
-- get_parentheses() ==> trouve les panrenthese et leur donne priorite ou non (a appaler dans get_minus_prio)
-- construire arbre binaire
-- resoudre en parcourant arbre
-*/
+var gRules []sRule
 
-func fillTree(querie string, rule sRule) *Tree {
-	fmt.Printf("Vars = %#v\n", vars)
-	if len(rule.Facts) == 1 && len(rule.Conclusion) == 1 {
-		negation := false
-		if strings.Contains(rule.Facts[0], "!") || strings.Contains(rule.Conclusion[0], "!") {
-			negation = true
-		}
-		if vars[rule.Facts[0]] != "" && vars[rule.Conclusion[0]] != "" { // si existent deja toute les 2
-			if vars[rule.Facts[0]] != vars[rule.Conclusion[0]] { //on verifie qu'elles sont egales
-				printErrorMsg("System as contradictions please review input")
-			}
-		} else { // sinon on assigne la valeur de celle qui esst dans fact a l'autre
-			if vars[rule.Facts[0]] != "" {
-				bFacts, err2 := strconv.ParseBool(vars[rule.Facts[0]])
-				if err2 == nil {
-					if negation {
-						vars[rule.Conclusion[0]] = strconv.FormatBool(!bFacts)
-					} else {
-						vars[rule.Conclusion[0]] = vars[rule.Facts[0]]
-					}
-				} else {
-					printError(err2)
-				}
-			}
-		}
-		return nil
-	} else {
-		titi := newTree(rule.Facts)
-		println("\nTREEEEEE : ", treeToString(titi))
-		return titi
-	}
+func fillTree(toTree []string) *Tree {
+	tree := newTree(toTree)
+	return tree
 }
 
-func logiqueresolv(val1 string, ope string, val2 string) string {
-	res := ""
-	println("dans logique resolved\nval1 = ", val1, "    ope = ", ope, "    val2 = ", val2)
-	left, err := strconv.ParseBool(val1)
-	right, err2 := strconv.ParseBool(val2)
-	println("left = ", left, "  right = ", right)
-	if err == nil && err2 == nil {
-		println("left = ", left, "  right = ", right)
-		if strings.TrimSpace(ope) == "|" {
-			res = strconv.FormatBool(left || right)
-			print("res = ", res)
-			return res
-		} else if strings.TrimSpace(ope) == "+" {
-			res = strconv.FormatBool(left && right)
-			print("res = ", res)
-			return res
-		} else {
-			res = strconv.FormatBool((left || right) && !(left && right))
-			print("res = ", res)
-			return res
-		}
-	} else {
-		fmt.Println("resolveNode: left:", left, "right:", right)
-		if (left == true || right == true) && ope == "|" {
-			return "true"
-		} else if (left == false || right == false) && ope == "+" {
+func backtraking(newLetter string) string {
+	// println("Enter in backtraking -- Letter is:", newLetter)
+	tab := checkLetterInConc(newLetter, gRules)
+	for i := 0; i < len(tab); i++ {
+		newFact := fillTree(gRules[tab[i]].Facts)
+		// println("Backtraking tree facts:", treeToString(newFact))
+		newValue := browseTree(newFact)
+		if newValue == "" {
+			/*		if (leftVal == "true" || rightVal == "true") && ope == "|" {
+					return "true"
+					} else if (leftVal == "false" || rightVal == "false") && ope == "+" {
+						return "false"
+					} else if (leftVal == "true" || rightVal == "true") && ope == "^" {
+						return "true"
+					}*/
 			return "false"
 		}
-		// fmt.Println("Return val of browseTree val: undefine")
-		return "undefine"
+		if newValue == "true" {
+			// println("newLetter:", newLetter, "=", newValue)
+			vars[newLetter] = newValue
+		}
+		return newValue
 	}
+	return "false"
+}
+
+func operatorResolver(leftVal string, ope string, rightVal string) string {
+	// println("Enter dans operatorResolver avec :", leftVal, "et", rightVal)
+	res := ""
+	left, err := strconv.ParseBool(leftVal)
+	right, err2 := strconv.ParseBool(rightVal)
+	if err == nil && err2 == nil {
+		if strings.TrimSpace(ope) == "|" {
+			res = strconv.FormatBool(left || right)
+		} else if strings.TrimSpace(ope) == "+" {
+			res = strconv.FormatBool(left && right)
+		} else {
+			res = strconv.FormatBool((left || right) && !(left && right))
+		}
+		// println("Exit de operatorResolver 1 et res = ", res, "\n")
+		return res
+	} else {
+		// println("Exit de operatorResolver 2 et res = ", res, "\n")
+		return ""
+	}
+
 }
 
 func browseTree(t *Tree) string {
 	leftVal := ""
 	rightVal := ""
-	println("t value = ", fmt.Sprint(t.Value))
-	//si val actuelle != lettre
+	// println("Enter in browseTree with tree:", treeToString(t))
 	if strings.ContainsAny(t.Value, "+|^") {
-		//on rappele browse tree : leftVal = browseTree(t.Left)
 		if t.Left != nil {
-			println("t left = ", t.Left.Value)
 			leftVal = browseTree(t.Left)
 		}
 		if t.Right != nil {
-			println("t right = ", t.Right.Value)
 			rightVal = browseTree(t.Right)
 		}
-		t.Value = logiqueresolv(leftVal, t.Value, rightVal)
+		// println("Tree before the before:", treeToString(t))
+		// println("Before -- leftVal:", leftVal, "rightVal:", rightVal)
+		// if leftVal == "" {
+		// 	leftVal = backtraking(t.Left.Value)
+		// }
+		// if rightVal == "" {
+		// 	rightVal = backtraking(t.Right.Value)
+		// }
+		// println("After -- leftVal:", t.Left.Value, "=", leftVal, "rightVal:", t.Right.Value, "=", rightVal, "\n")
+		// BACKTRAKING --- ici ---
+		// avec test est-ce que lettre inconnue est dans une partie droite? (if ==> [contient LETTRE])
+		// if backtraking est false alors on fait les tests suivants :
+		t.Value = operatorResolver(leftVal, t.Value, rightVal)
 		t.Left = nil
 		t.Right = nil
 		return t.Value
-	} else { //si lettre
+	} else {
 		if strings.ContainsAny(t.Value, "!") {
 			val, err := strconv.ParseBool(vars[t.Value[1:]])
 			if err == nil {
 				return strconv.FormatBool(!val)
 			} else {
-				printErrorMsg("ERROR")
-				return "error"
+				return "true"
 			}
 		}
-		println("t.Value 2 = ", t.Value)
-		println("vars[t.Value] = ", vars[t.Value])
+		if vars[t.Value] == "" {
+			newValue := backtraking(t.Value)
+			// println("Exit browseTree t.Value: ", t.Value, "=", newValue)
+			return newValue
+		}
+		// println("Exit browseTree t.Value: ", t.Value, "=", vars[t.Value])
 		return vars[t.Value]
 	}
 }
 
-func resolve(file sFile) {
-	fmt.Println("The queries is", file.Queries[:], "?")
-	fmt.Println(file.Rules)
-	lenQueries := len(file.Queries)
-	for i := 0; i < lenQueries; i++ {
-		if vars[string(file.Queries[i])] != "" {
-			fmt.Println(file.Queries[i], "is", vars[string(file.Queries[i])])
-			file.Queries = removeIndexFormTab(i, file.Queries)
-			i--
-			lenQueries--
-			continue
-		} else {
-			cmpt := 0
-			for j := 0; j < len(file.Rules); j++ {
-				cmpt++
-				t := fillTree(file.Queries[i], file.Rules[j])
-				if t == nil {
-					continue
-				} else if cmpt > len(file.Rules) {
-					printErrorMsg("resolution impossible, please change the input")
-				}
-				res := browseTree(t)
-				println("AFTER === ", treeToString(t), "   res = ", res)
-				if res != "undefine" {
-					println("lolilol")
-					if vars[file.Queries[i]] != "" {
-						println("lolilol222")
-						if vars[file.Queries[i]] == res {
-							println("lolilol3333")
-							file.Queries = removeIndexFormTab(i, file.Queries)
-							i--
-							lenQueries--
-						} else {
-							printErrorMsg("Contradiction in the variable values, please check the input!")
-						}
-					} else {
-						println("lolilol4444")
-						vars[file.Queries[i]] = res
-						file.Queries = removeIndexFormTab(i, file.Queries)
-						i--
-						lenQueries--
-					}
-				}
+func browseConclusionTree(t *Tree, res string) {
+	if strings.ContainsAny(t.Value, "+") {
+		if t.Left != nil {
+			browseConclusionTree(t.Left, res)
+		}
+		if t.Right != nil {
+			browseConclusionTree(t.Right, res)
+		}
+		return
+	} else if res == "true" {
+		if strings.ContainsAny(t.Value, "!") {
+			val, err := strconv.ParseBool(res)
+			if err == nil {
+				strVal := strconv.FormatBool(!val)
+				vars[t.Value[1:]] = strVal
+			}
+			return
+		}
+		if vars[t.Value] != res && vars[t.Value] != "" {
+			printErrorMsg("Contradiction in the variable values, please check the input!")
+		}
+		vars[t.Value] = res
+		return
+	}
+	return
+}
+
+func checkLetterInConc(letter string, rules []sRule) []int {
+	var tab []int
+	for i := 0; i < len(rules); i++ {
+		for j := 0; j < len(rules[i].Conclusion); j++ {
+			if strings.ContainsAny(rules[i].Conclusion[j], letter) {
+				tab = append(tab, i)
 			}
 		}
 	}
-	fmt.Println("Init = ", file.Init[:])
-	fmt.Printf("Vars = %#v\n", vars)
+	return tab
+}
+
+func resolve(file sFile) {
+	lenQueries := len(file.Queries)
+	gRules = file.Rules
+	for i := 0; i < lenQueries; i++ {
+		res := checkLetterInConc(file.Queries[i], file.Rules)
+		//for chaque regles
+		for j := 0; j < len(res); j++ {
+			tFact := fillTree(file.Rules[res[j]].Facts)
+			// println("before browseTree of tree:", treeToString(tFact))
+			querieRes := browseTree(tFact)
+			// println("result of tree:", treeToString(tFact), "=", querieRes, "\n")
+			// fmt.Printf("vars = %v\n", vars)
+			// println("conclusion tree:", treeToString(fillTree(file.Rules[res[j]].Conclusion)), "=", querieRes, "\n")
+			browseConclusionTree(fillTree(file.Rules[res[j]].Conclusion), querieRes)
+		}
+		// println("int res checkletterinconc:", res, "facts:", treeToString(tFact))
+		// tu essaye de la resoudre
+		// si undefine tu check les tree et tu rappele cette function avec les du tree (ou le faire dans le tree)
+		// Si queries toutes trouvée alors stop
+		// res := browseTree(tFacts)
+		// // println("res =", res)
+		// browseConclusionTree(tConclusion, res)
+	}
 	return
 }
