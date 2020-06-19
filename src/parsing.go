@@ -77,6 +77,9 @@ func checkError(lineSplit []string) bool {
 		}
 		for ; y < len(p); y++ {
 			s := strings.Split(strings.TrimSpace(p[y]), ")")[0]
+			if s == "" {
+				continue
+			}
 			if s[len(s)-1] == '+' || s[len(s)-1] == '|' || s[len(s)-1] == '^' {
 				s = s[:len(s)-1]
 			}
