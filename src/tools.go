@@ -38,3 +38,7 @@ func printResult(file sFile) {
 		fmt.Println(file.Queries[i], "is", vars[string(file.Queries[i])])
 	}
 }
+
+func delChar(s string, index int) string {
+	return s[0:index] + s[index+1:]
+}

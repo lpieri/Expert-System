@@ -1,4 +1,4 @@
-(A + B) ^ (D | K) => P
+((A + B) ^ (D | K)) + A => P
 X | (A | K ^ Z) => N # N is True
 !T + !X => G # G is true
 !L => M # M is True

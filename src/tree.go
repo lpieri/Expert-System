@@ -5,13 +5,24 @@ import (
 	"strings"
 )
 
-func serchForParentheses(rule string) (int, int) {
+func serchForParentheses(rule string) (int, int, int) {
 	first := -1
 	last := -1
+	mid := -1
+	println("rule = ", rule)
 	for i := 0; i < len(rule); i++ {
-		if rule[i] == '(' && first == -1 {
-			first = i
+		if rule[i] == '(' {
+			//println("[1]   ---  i = ", i, "first = ", first)
+			if rule[i] == '(' && first == -1 {
+				//println("   [2]   ---  i = ", i, "first = ", first)
+				first = i
+				continue
+			}
+			if i > last && last != -1 {
+				mid = i
+			}
 		} else if rule[i] == ')' && i > first {
+			//println("      [3]   ---  i = ", i, "first = ", first)
 			if first == -1 {
 				printErrorMsg("Error in input file, please check the parentheses")
 			}
@@ -23,7 +34,7 @@ func serchForParentheses(rule string) (int, int) {
 			printErrorMsg("Error in input file, please check the parentheses2")
 		}
 	}
-	return first, last
+	return first, last, mid
 }
 
 func checkForSymbol(t *Tree, rule string, symb string) *Tree {
@@ -55,8 +66,16 @@ func isPrio(t *Tree, rule string) *Tree {
 	} else if strings.Contains(rule, "+") && !strings.ContainsAny(rule, "()") {
 		t = checkForSymbol(t, rule, "+")
 	} else if strings.ContainsAny(rule, "()") {
-		first, last := serchForParentheses(rule)
-		if first == 0 && last == len(rule)-1 {
+		first, last, mid := serchForParentheses(rule)
+		if mid != -1 {
+			println("Rule before =", rule)
+			rule = delChar(rule, last)
+			rule = delChar(rule, first)
+			rule = delChar(rule, mid-1)
+			rule = delChar(rule, mid-3)
+			println("Rule after =", rule)
+			t = checkForSymbol(t, rule, string(rule[mid-1]))
+		} else if first == 0 && last == len(rule)-1 {
 			rule = rule[1 : len(rule)-1]
 			t = isPrio(t, rule)
 		} else if first == 0 {
