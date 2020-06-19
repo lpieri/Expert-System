@@ -14,12 +14,20 @@ func removeComment(line string) string {
 }
 
 func addVar(tab []string) {
+	var lettre string
 	for i := 0; i < len(tab); i++ {
+		lettre = tab[i]
 		if tab[i] != "+" && tab[i] != "^" && tab[i] != "|" {
 			if strings.Contains(tab[i], "!") {
-				tab[i] = tab[i][1:]
+				lettre = strings.Replace(tab[i], "!", "", -1)
 			}
-			vars[tab[i]] = ""
+			if strings.Contains(tab[i], "(") {
+				lettre = strings.Replace(tab[i], "(", "", -1)
+			}
+			if strings.Contains(tab[i], ")") {
+				lettre = strings.Replace(tab[i], ")", "", -1)
+			}
+			vars[lettre] = ""
 		}
 	}
 }
@@ -69,6 +77,9 @@ func checkError(lineSplit []string) bool {
 		}
 		for ; y < len(p); y++ {
 			s := strings.Split(strings.TrimSpace(p[y]), ")")[0]
+			if s == "" {
+				continue
+			}
 			if s[len(s)-1] == '+' || s[len(s)-1] == '|' || s[len(s)-1] == '^' {
 				s = s[:len(s)-1]
 			}
@@ -97,9 +108,12 @@ func getRule(line string) sRule {
 	}
 	facts := strings.Split(strings.TrimSpace(lineSplit[0]), " ")
 	conclusion := strings.Split(strings.TrimSpace(lineSplit[1]), " ")
+	if len(lineSplit) != 2 {
+		printErrorMsg("Error no '[fact] => [conclusion]' found in rules, please review the format of the input file")
+	}
+	rule := sRule{Conclusion: conclusion, Facts: facts}
 	addVar(facts)
 	addVar(conclusion)
-	rule := sRule{Conclusion: conclusion, Facts: facts}
 	return rule
 }
 
@@ -139,7 +153,7 @@ func openFile(fileName string) sFile {
 	} else {
 		data := string(bits)
 		file = parseFile(data)
-		if file.Queries == nil || file.Init == nil || file.Rules == nil {
+		if file.Queries == nil || file.Rules == nil {
 			printErrorMsg("Rules, Facts or Querie missing, please review your input file.")
 		}
 	}

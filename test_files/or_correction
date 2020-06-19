@@ -2,5 +2,10 @@ B + C => A
 D | E => B
 B => C
 
-=D
+=
 ?A
+
+# Avec fait initiaux = , A doit être égal à false
+# Avec fait initiaux =D , A doit être égal à true
+# Avec fait initiaux =E , A doit être égal à true
+# Avec fait initiaux =DE , A doit être égal à true

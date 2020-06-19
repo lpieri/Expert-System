@@ -1,8 +1,8 @@
-
-!(A + B) ^ (D | K) => P # P is False
+((A + B) ^ (D | K)) + A => P
+((A + B) ^ (D | K)) + B + (A + B)=> P
 X | (A | K ^ Z) => N # N is True
 !T + !X => G # G is true
 !L => M # M is True
 
 =ADF
-?ADFNGMTX
+?ADFNGMTXP

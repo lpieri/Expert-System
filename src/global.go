@@ -13,3 +13,12 @@ type sFile struct {
 	Queries []string
 	Init    []string
 }
+
+type Tree struct {
+	Left  *Tree
+	Value string
+	Right *Tree
+}
+
+var mCompDict = map[string]int{"^": 0, "|": 1, "+": 2, "": 10}
+var gInsolvable int = 0

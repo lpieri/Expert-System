@@ -1,6 +1,12 @@
-A + B => C + D
-A + Z => Y
-B + D => X
+A + B => C
+!A + Z | (A + (B + C)) => Y
+B + D | C => X
+A => E
 
-=AB
-?CDXY
+=A
+?ABCEYX
+
+#         |
+#     +       +
+# !A   Z    a    +
+#              B   C
