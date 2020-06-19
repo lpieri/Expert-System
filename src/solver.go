@@ -48,6 +48,10 @@ func operatorSolver(leftVal string, ope string, rightVal string) string {
 }
 
 func browseTree(t *Tree) string {
+	gInsolvable++
+	if gInsolvable > 10000 {
+		return "false"
+	}
 	leftVal := ""
 	rightVal := ""
 	if strings.ContainsAny(t.Value, "+|^") {

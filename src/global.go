@@ -21,3 +21,4 @@ type Tree struct {
 }
 
 var mCompDict = map[string]int{"^": 0, "|": 1, "+": 2, "": 10}
+var gInsolvable int = 0
