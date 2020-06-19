@@ -44,7 +44,6 @@ func operatorSolver(leftVal string, ope string, rightVal string) string {
 	} else {
 		return ""
 	}
-
 }
 
 func browseTree(t *Tree) string {

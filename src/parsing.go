@@ -107,7 +107,6 @@ func getRule(line string) sRule {
 		printErrorMsg("The file is badly formatted, please check it.")
 	}
 	facts := strings.Split(strings.TrimSpace(lineSplit[0]), " ")
-	// fmt.Println("Fact in parser = ", facts)
 	conclusion := strings.Split(strings.TrimSpace(lineSplit[1]), " ")
 	if len(lineSplit) != 2 {
 		printErrorMsg("Error no '[fact] => [conclusion]' found in rules, please review the format of the input file")
@@ -115,7 +114,6 @@ func getRule(line string) sRule {
 	rule := sRule{Conclusion: conclusion, Facts: facts}
 	addVar(facts)
 	addVar(conclusion)
-	// fmt.Println("Rules in parser = ", rule)
 	return rule
 }
 
