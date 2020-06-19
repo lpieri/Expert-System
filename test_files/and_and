@@ -1,11 +1,10 @@
-A => B + !C
-#A + B => C
-#!A + Z | (A ^ (B + C) ^ Q) => Y
-#B + D | C => X
-#A => E
+A + B => C
+!A + Z | (A + (B + C)) => Y
+B + D | C => X
+A => E
 
 =A
-?ABC
+?ABCEYX
 
 #         |
 #     +       +

@@ -4,16 +4,16 @@ A | B + C => E
 =GH
 ?E
 
-# Avec fait initiaux =, E doit être égal à false	(ok)
+# Avec fait initiaux =, E doit être égal à false
 
-# Avec fait initiaux =A, E doit être égal à true	(ok)
-# Avec fait initiaux =B, E doit être égal à false	(ok)
-# Avec fait initiaux =C, E doit être égal à false	(ok)
-# Avec fait initiaux =AC, E doit être égal à true	(ok)
-# Avec fait initiaux =BC, E doit être égal à true	(ok)
+# Avec fait initiaux =A, E doit être égal à true
+# Avec fait initiaux =B, E doit être égal à false
+# Avec fait initiaux =C, E doit être égal à false
+# Avec fait initiaux =AC, E doit être égal à true
+# Avec fait initiaux =BC, E doit être égal à true
 
-# Avec fait initiaux =F, E doit être égal à false	(ok)
-# Avec fait initiaux =G, E doit être égal à false	(ok)
-# Avec fait initiaux =H, E doit être égal à false	(ok)
-# Avec fait initiaux =FH, E doit être égal à true	(ok)
-# Avec fait initiaux =GH, E doit être égal à true	(ok)
+# Avec fait initiaux =F, E doit être égal à false
+# Avec fait initiaux =G, E doit être égal à false
+# Avec fait initiaux =H, E doit être égal à false
+# Avec fait initiaux =FH, E doit être égal à true
+# Avec fait initiaux =GH, E doit être égal à true
